@@ -1,0 +1,478 @@
+#define OOF_IMPL
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
+#include <queue>
+#include <string>
+#include <windows.h>
+#include "oof.hpp"
+
+using namespace std;
+using namespace oof;
+
+void all_color(int red, int green, int blue){
+    cout << fg_color({ red, green, blue }) << bg_color({ red, green, blue });
+}
+void windowInterface(int x, int y){
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    COORD bufferSize = { (SHORT)x, (SHORT)y };
+    SetConsoleScreenBufferSize(hOut, bufferSize);
+
+    SMALL_RECT windowSize = { 0, 0, (SHORT)(x - 1), (SHORT)(y - 1) };
+    SetConsoleWindowInfo(hOut, TRUE, &windowSize);
+}
+void interfaceMenu(int &opc) {
+    cout << cursor_visibility(0);
+    windowInterface(42, 22);
+    int filas, columnas;
+    int matriz[21][41] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0, 0, 3, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 3, 3, 0, 3, 0, 0, 0, 0, 3, 3, 0, 0, 3, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 3, 0, 3, 0, 3, 3, 3, 0, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 3, 0, 0, 0, 0, 3, 0, 0, 3, 3, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0, 0, 3, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+    };
+    all_color(100, 100, 100);
+    for (int i = 0; i < 21; i++) {
+        for (int j = 0; j < 41; j++) {
+            if (matriz[i][j] == 0) all_color(100, 100, 100);
+            if (matriz[i][j] == 1) all_color(100, 255, 100);
+            if (matriz[i][j] == 3) all_color(100, 0, 100);
+            cout << matriz[i][j];
+        }
+        cout << '\n';
+    }
+    cout << reset_formatting() << bg_color({ 100, 100, 100 });
+    cout << position(11, 10) << "1. CPO" << position(13, 10) << "2. Integrantes" << position(15, 10) << "0. Salir";
+    cout << position(17, 10) << "Insert an option: "; cin >> opc; cout << position(21, 0);
+    cout << reset_formatting();
+}
+void interfaceParticipants() {
+    cout << cursor_visibility(0);
+    windowInterface(42, 22);
+    int filas, columnas;
+    int matriz[21][41] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 3, 0, 3, 0, 3, 0, 3, 3, 3, 0, 3, 3, 0, 3, 3, 3, 0, 3, 3, 0, 0, 0, 3, 0, 0, 3, 0, 3, 0, 3, 3, 3, 0, 3, 3, 0, 3, 3, 3, 1},
+    {1, 3, 0, 3, 3, 3, 0, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 3, 3, 0, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 1},
+    {1, 3, 0, 3, 3, 3, 0, 0, 3, 0, 0, 3, 3, 0, 3, 3, 3, 0, 3, 3, 0, 0, 3, 3, 3, 0, 3, 3, 3, 0, 0, 3, 0, 0, 3, 3, 0, 3, 3, 3, 1},
+    {1, 3, 0, 3, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 3, 1},
+    {1, 3, 0, 3, 0, 3, 0, 0, 3, 0, 0, 3, 3, 0, 3, 3, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 3, 0, 0, 3, 3, 0, 3, 3, 3, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+    };
+    all_color(100, 100, 100);
+    for (int i = 0; i < 21; i++) {
+        for (int j = 0; j < 41; j++) {
+            if (matriz[i][j] == 0) all_color(100, 100, 100);
+            if (matriz[i][j] == 1) all_color(100, 255, 100);
+            if (matriz[i][j] == 3) all_color(100, 0, 100);
+            cout << matriz[i][j];
+        }
+        cout << '\n';
+    }
+    cout << reset_formatting() << bg_color({ 100, 100, 100 });
+    cout << position(8, 3) << "1. Marcelo Fausto Pareja Calloapaza"
+        << position(10, 4) << "2. Jhosep Hernán Anchivilca Gómez" << position(12, 4) << "3. Oscar Emilio Calero Rodriguez"
+        << position(14, 5) << "4. Diego Alonso Coronado Campos" << position(16, 4) << "5. Pedro Javier Velásquez Alfaro";
+    cout << position(18, 9) << "Presione para continuar"; system("pause>0"); cout << position(21, 0);
+    cout << reset_formatting();
+}
+void interfaceWhatIs(int &opc) {
+    cout << cursor_visibility(0);
+    windowInterface(42, 22);
+    int filas, columnas;
+    int matriz[21][41] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 3, 3, 3, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 3, 3, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 3, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+    };
+    all_color(100, 100, 100);
+    for (int i = 0; i < 21; i++) {
+        for (int j = 0; j < 41; j++) {
+            if (matriz[i][j] == 0) all_color(100, 100, 100);
+            if (matriz[i][j] == 1) all_color(100, 255, 100);
+            if (matriz[i][j] == 3) all_color(100, 0, 100);
+            cout << matriz[i][j];
+        }
+        cout << '\n';
+    }
+    cout << reset_formatting() << bg_color({ 100, 100, 100 });
+    cout << position(8, 2) << "¿Qué es una ROP?" << position(10, 2) << "Una relación R en un conjunto A es un " << position(11, 2) 
+        << "orden Parcial si cumple las siguientes" << position(12, 2) << "propiedades:" << position(14, 2) 
+        << "1. R es reflexiva," << position(15, 2) << "2. R es asimétrica," << position(16, 2) << "3. R es transitiva";
+    cout << position(18, 2) << "Inserta la cantidad de cursos: "; cin >> opc; cout << position(21, 0);
+    cout << reset_formatting();
+}
+void interfaceMenuCPO(int &opc) {
+    cout << cursor_visibility(0);
+    windowInterface(42, 22);
+    int filas, columnas;
+    int matriz[21][41] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 3, 3, 3, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 3, 3, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 3, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+    };
+    all_color(100, 100, 100);
+    for (int i = 0; i < 21; i++) {
+        for (int j = 0; j < 41; j++) {
+            if (matriz[i][j] == 0) all_color(100, 100, 100);
+            if (matriz[i][j] == 1) all_color(100, 255, 100);
+            if (matriz[i][j] == 3) all_color(100, 0, 100);
+            cout << matriz[i][j];
+        }
+        cout << '\n';
+    }
+    cout << reset_formatting() << bg_color({ 100, 100, 100 });
+    cout << position(8, 7) << "1. Mostrar Cursos Por Ciclo" << position(10, 8) << "2. Mostrar Prerrequisitos" 
+        << position(12, 12) << "3. Mostrar Matriz" << position(14, 5) << "4. Verificar si se trata de CPO";
+    cout << position(16, 15) << "0. Regresar";
+    cout << position(18, 11) << "Insert an option: "; cin >> opc; cout << position(21, 0);
+    cout << reset_formatting();
+}
+struct Curso {
+    string nombre;
+    int ciclo = 0;
+    vector<string> prerrequisitosDe;
+};
+map<string, Curso> inicializarCursos(int size) {
+    map<string, Curso> cursos;
+    for (int i = 1; i <= size; ++i) {
+        string nombre = "C" + to_string(i);
+        cursos[nombre] = Curso{ nombre };
+    }
+    return cursos;
+}
+void asignarPrerrequisitos(map<string, Curso>& cursos, int size) {
+    for (int i = 1; i <= size; ++i) cursos["C" + to_string(i)].ciclo = (i - 1) / 5 + 1;
+
+    for (int i = 1; i <= size - 5; ++i) {
+        srand(time(nullptr));
+        if (i <= 5) continue;
+
+        string nombreActual = "C" + to_string(i);
+        int cicloActual = cursos[nombreActual].ciclo, cantidadPrerrequisitosDe = rand() % 3;
+
+        while (cantidadPrerrequisitosDe--) {
+            int minDestino = i + 1, maxDestino = size;
+            if (minDestino > maxDestino) break;
+
+            int allowed = size / 5, cicloMaximoPermitido = min(allowed, cicloActual + 3), destino, intentos = 0;
+
+            do {
+                destino = rand() % (maxDestino - minDestino + 1) + minDestino;
+                intentos++;
+            } while (intentos < 100 && cursos["C" + to_string(destino)].ciclo > cicloMaximoPermitido);
+
+            if (intentos < 100) cursos[nombreActual].prerrequisitosDe.push_back("C" + to_string(destino));
+        }
+    }
+}
+void mostrarPrerrequisitos(const map<string, Curso>& cursos, int size) {
+    windowInterface(64, size + 3);
+    cout << cursor_visibility(0);
+    all_color(100, 100, 100);
+    int max_x = size + 2, max_y = 63;
+    for (int i = 0; i < max_x; i++) {
+        for (int j = 0; j < max_y; j++) {
+            if (i == 0 || i == max_x - 1 || j == max_y - 1 || j == 0) all_color(100, 255, 100);
+            else all_color(100, 100, 100);
+            cout << 0;
+        }
+        cout << '\n';
+    }
+    cout << reset_formatting() << bg_color({ 100, 100, 100 });
+    cout << position(1, 1) << "=== Relaciones de Prerrequisitos (Ordenadas de C1 a C" << (size - 5) << ") ===";
+    int extra = 0;
+    for (int i = 1; i <= size - 5; ++i) {
+        cout << position(2 + extra, 1);
+        string nombreCurso = "C" + to_string(i);
+        auto it = cursos.find(nombreCurso);
+
+        if (it != cursos.end()) {
+            const vector<string>& prerrequisitosDe = it->second.prerrequisitosDe;
+            cout << nombreCurso << " es prerrequisito de: ";
+
+            if (prerrequisitosDe.empty()) cout << "Ninguno";
+            else for (const string& curso : prerrequisitosDe) cout << curso << " ";
+            extra++;
+        }
+    }
+    cout << position(max_x - 3, 1);
+}
+bool esOrdenParcial(vector<vector<int>>& matriz) {
+    int n = matriz.size();
+
+    for (int i = 0; i < n; ++i)
+        if (matriz[i][i] != 1) {
+            cout << "Falla reflexividad en M[" << i << "][" << i << "]\n";
+            return false;
+        }
+
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < n; ++j)
+            if (i != j && matriz[i][j] == 1 && matriz[j][i] == 1) {
+                cout << "Falla antisimetria: M[" << i << "][" << j << "] y M[" << j << "][" << i << "]\n";
+                return false;
+            }
+
+    for (int i = 0; i < n; ++i) 
+        for (int j = 0; j < n; ++j) 
+            if (matriz[i][j] == 1) 
+                for (int k = 0; k < n; ++k) 
+                    if (matriz[j][k] == 1 && matriz[i][k] != 1) {
+                        cout << "Falla transitividad: M[" << i << "][" << k << "] deberia ser 1\n";
+                        return false;
+                    }
+    return true;
+}
+// Función para asignar ciclos usando BFS (ordenamiento topológico)
+void asignarCiclos(map<string, Curso>& cursos) {
+    queue<string> cola;
+    for (int i = 1; i <= 5; ++i) {
+        string nombre = "C" + to_string(i);
+        cursos[nombre].ciclo = 1;
+        cola.push(nombre);
+    }
+    while (!cola.empty()) {
+        string actual = cola.front();
+        cola.pop();
+        for (string siguiente : cursos[actual].prerrequisitosDe) {
+            if (cursos[siguiente].ciclo < cursos[actual].ciclo + 1) {
+                cursos[siguiente].ciclo = cursos[actual].ciclo + 1;
+                cola.push(siguiente);
+            }
+        }
+    }
+}
+void mostrarCursosPorCiclo(map<string, Curso>& cursos) {
+    map<int, vector<string>> ciclos;
+    for (const auto& par : cursos) ciclos[par.second.ciclo].push_back(par.first);
+    windowInterface(43 + 1, (ciclos.size() * 2) + 4 + 1);
+
+    cout << cursor_visibility(0);
+    all_color(100, 100, 100);
+    int max_x = ciclos.size() * 2 + 4, max_y = 43;
+    for (int i = 0; i < max_x; i++) {
+        for (int j = 0; j < max_y; j++) {
+            if (i == 0 || i == max_x - 1 || j == max_y - 1 || j == 0) all_color(100, 255, 100);
+            else all_color(100, 100, 100);
+            cout << 0;
+        }
+        cout << '\n';
+    }
+    cout << reset_formatting() << bg_color({ 100, 100, 100 });
+
+    cout << position(1, 1) << "=== Distribución de Cursos por Ciclos ===";
+    int i = 0;
+    for (auto& par : ciclos) {
+        cout << position(2 + i, 1); cout << "Ciclo " << par.first << ": ";
+        int j = 0;
+        for (const string& curso : par.second) { 
+            cout << position(2 + i, 6 + to_string(par.first).size() + 2 + j); cout << curso << " ";
+            j+=(curso.size() + 1);
+        }
+        i+=2;
+    }
+    cout << position(max_x - 2, 1);
+}
+void crearMatriz(map<string, Curso>& cursos, vector<vector<int>>& matriz, int size) {
+    for (int i = 1; i <= size; i++) {
+        for (int j = 1; j <= size; j++) {
+            if (i == j) matriz[i - 1][j - 1] = 1;
+            else {
+                string cursoI = "C" + to_string(i);
+                string cursoJ = "C" + to_string(j);
+                auto& prereqs = cursos[cursoI].prerrequisitosDe;
+                if (find(prereqs.begin(), prereqs.end(), cursoJ) != prereqs.end()) matriz[i - 1][j - 1] = 1;
+                else matriz[i - 1][j - 1] = 0;
+            }
+        }
+    }
+}
+void mostrarMatriz(vector<vector<int>>& matriz, int size) {
+    windowInterface(max(42, (size + 5) * 2), size + 5);
+    cout << cursor_visibility(0);
+    all_color(100, 100, 100);
+    int max_x = size + 4, max_y = max(42, (size + 4) * 2);
+    for (int i = 0; i < max_x; i++) {
+        for (int j = 0; j < max_y; j++) {
+            if (i == 0 || i == max_x - 1 || j == max_y - 1 || j == 0) all_color(100, 255, 100);
+            else all_color(100, 100, 100);
+            cout << 0;
+        }
+        cout << '\n';
+    }
+    cout << reset_formatting() << bg_color({ 100, 100, 100 });
+    cout << position(1, 1) << "=== Matriz ===";
+    int extra = 0;
+    for (int i = 1; i <= size; i++) {
+        for (int j = 1; j <= size; j++) {
+            extra++;
+            cout << position(i + 1, j + 1 + extra) << matriz[i - 1][j - 1];
+        }
+        extra = 0;
+    }
+    cout << position(max_x - 2, 1);
+}
+void verificarMatriz(vector<vector<int>>& matriz){
+    windowInterface(47, 7);
+    cout << cursor_visibility(0);
+    all_color(100, 100, 100);
+    int max_x = 6, max_y = 46;
+    for (int i = 0; i < max_x; i++) {
+        for (int j = 0; j < max_y; j++) {
+            if (i == 0 || i == max_x - 1 || j == max_y - 1 || j == 0) all_color(100, 255, 100);
+            else all_color(100, 100, 100);
+            cout << 0;
+        }
+        cout << '\n';
+    }
+    cout << reset_formatting() << bg_color({ 100, 100, 100 });
+    cout << position(1, 1) << "Verificando matriz de ejemplo...";
+    cout << position(2, 1);
+    if (esOrdenParcial(matriz)) cout << position(3, 1) << "La matriz ES de orden parcial.";
+    else cout << position(3, 1) << "La matriz NO es de orden parcial.";
+    cout << position(4, 1);
+}
+void enable_virtual_terminal_processing() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD dwMode = 0;
+    GetConsoleMode(hOut, &dwMode);
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, dwMode);
+}
+int main() {
+    int opc;
+    enable_virtual_terminal_processing();
+    do {
+        interfaceMenu(opc);
+        system("cls");
+
+        switch (opc) {
+        case 1: {
+            int nopc, sz;
+            interfaceWhatIs(sz);
+            system("cls");
+            map<string, Curso> cursos = inicializarCursos(sz);
+            vector<vector<int>> matriz(sz, vector<int>(sz));
+            asignarPrerrequisitos(cursos, sz);
+            asignarCiclos(cursos);
+            crearMatriz(cursos, matriz, sz);
+            do {
+                interfaceMenuCPO(nopc);
+                system("cls");
+
+                switch (nopc)
+                {
+                case 1:
+                    mostrarCursosPorCiclo(cursos);
+                    break;
+                case 2:
+                    mostrarPrerrequisitos(cursos, sz);
+                    break;
+                case 3:
+                    mostrarMatriz(matriz, sz);
+                    break;
+                case 4:
+                    verificarMatriz(matriz);
+                    break;
+                case 0:
+                    break;
+
+                default:
+                    break;
+                }
+
+                if (nopc != 0) system("pause"), cout << reset_formatting(), system("cls");
+
+            } while (nopc != 0);
+            
+            break;
+        }
+        case 2:
+            interfaceParticipants();
+            break;
+        
+        case 0:
+            break;
+
+        default:
+            break;
+        }
+
+        if (opc != 0) system("cls");
+
+    } while (opc != 0);
+    return 0;
+}
